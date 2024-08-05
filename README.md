@@ -2,6 +2,14 @@
 
 This is server side ui for managing training data and manually training the network
 
+Package required:
+numpy
+pandas
+torch
+sklearn
+streamlit
+matplotlib
+
 How to run:
 1. Download data_modification_interface.py
 2. Put the file into desired directory
