@@ -113,6 +113,7 @@ class voter():
     def majority_vote(self, input_param):
         today = date.today()
         modelList = []
+        unloadableModel = ""
 
         for i in range(10):
             curday = today - datetime.timedelta(i)
@@ -126,7 +127,7 @@ class voter():
                 model_temp = torch.load(path)
                 modelList.append(model_temp)
             except:
-                pass
+                unloadableModel+=path+" "
 
         majority = None
         for i in range(len(modelList)):
@@ -137,6 +138,8 @@ class voter():
             else:
                 majority += pred_result
 
+        st.toast("Failed to load the following models: "+unloadableModel)
+
         return int(majority.argmax())
 
     def load_network(self, path):
@@ -144,7 +147,7 @@ class voter():
             self.model.load_state_dict(torch.load(path))
             self.model.eval()
         except:
-            st.write("Can't load network")
+            st.toast("Can't load network")
 
     def save_network(self):
         today = date.today()
