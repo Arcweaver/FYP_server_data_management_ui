@@ -163,18 +163,25 @@ class voter():
 
 class plotter():
 
-    def plot(data, method, x, y):
+    def plot(data, method, x, y, real_class=None):
         try:
             fig, ax = plt.subplots()
             if method == "plot":
                 ax.plot(data[x], data[y]) 
                 st.pyplot(fig) 
+            elif method == "line":
+                st.line_chart(
+                    data,
+                    x=x,
+                    y=y,
+                    color=real_class
+                    )
             elif method == "scatter":
                 st.scatter_chart(
                     data,
                     x=x,
                     y=y,
-                    color="target"
+                    color=real_class
                     )
             elif method == "stem":
                 ax.stem(data[x], data[y])  
@@ -184,14 +191,14 @@ class plotter():
                     data,
                     x=x,
                     y=y,
-                    color="target"
+                    color=real_class
                     )
             elif method == "bar":
                 st.bar_chart(
                     data,
                     x=x,
                     y=y,
-                    color="target"
+                    color=real_class
                     )
         except Exception as e:
             st.toast("Unable to plot the "+method+" graph\nError: "+str(e))
@@ -282,7 +289,7 @@ class data_modification_interface():
             st.write("Select displaying axes and display format:")
             self.parameterList = list(self.originalTrainData.columns[:-1])
             self.targetCol = self.originalTrainData[self.originalTrainData.columns[-1]]
-            self.displayFormatDict = {"basic plot":"plot", "scatter graph":"scatter", "stem graph":"stem graph", "area chart":"area", "bar chart":"bar"}
+            self.displayFormatDict = {"basic plot":"plot", "line chart":"line", "scatter chart":"scatter", "stem chart":"stem graph", "area chart":"area", "bar chart":"bar"}
 
             col1, col2 = st.columns(2)
             with col1:
@@ -303,8 +310,10 @@ class data_modification_interface():
                 #     getattr(ax, self.displayFormatDict[displayFormat])(xPresentation)
                 # st.pyplot(fig)
                 
+                mapper = self.flower_mapping_frame.set_index('Id')['Flower'].to_dict()
+                self.originalTrainData['Flower Name'] = self.originalTrainData['target'].map(mapper)
 
-                graph = plotter.plot(self.originalTrainData, self.displayFormatDict[displayFormat], xPresentation, yPresentation)
+                graph = plotter.plot(self.originalTrainData, self.displayFormatDict[displayFormat], xPresentation, yPresentation, "Flower Name")
                     
 
 
