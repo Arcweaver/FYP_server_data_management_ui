@@ -161,7 +161,24 @@ class voter():
         except:
             st.toast("Can't save network")
 
+class plotter():
 
+    def plot(data, method, x, y):
+        try:
+            fig, ax = plt.subplots()
+            if method == "plot":
+                ax.plot(data[x], data[y])
+            elif method == "scatter":
+                ax.scatter(data[x], data[y])
+            elif method == "stem":
+                ax.stem(data[x], data[y])
+            elif method == "stackplot":
+                ax.stackplot(data[x], data[y])
+            elif method == "hist":
+                ax.hist(data[x], bins=20)
+            st.pyplot(fig)
+        except:
+            st.toast("Unable to plot the "+method+" graph")
 
 class data_modification_interface():
 
@@ -217,58 +234,97 @@ class data_modification_interface():
         self.y_test = torch.LongTensor(self.y_test)
 
     def draw(self):
-        st.header("Modify classes and test data here")
+        st.header("Modify classes and test data here",anchor=False)
         st.divider()
-        st.subheader("Classes:")
-        edited_df = st.data_editor(
-            self.flower_mapping_frame,
-            column_config={
-                'Id': 'Id',
-                'Flower': 'Flowers',
-                'Include': st.column_config.CheckboxColumn(
-                    'Include?',
-                    help="Select to include this element",
-                    default=False,
-                ),
-            },
-            num_rows="dynamic"
-        )
+        with st.expander("Class modification"):
+            st.subheader("Classes:",anchor=False)
+            edited_df = st.data_editor(
+                self.flower_mapping_frame,
+                column_config={
+                    'Id': 'Id',
+                    'Flower': 'Flowers',
+                    'Include': st.column_config.CheckboxColumn(
+                        'Include?',
+                        help="Select to include this element",
+                        default=False,
+                    ),
+                },
+                num_rows="dynamic"
+            )
 
-        if st.button("Confirm Change"):
-            edited_df.to_csv(self.classFilePath, index=False)
-            self.label_mapping = self.dfToDict(edited_df, 'Id', 'Flower')
-            self.output_dim = len(self.label_mapping)
-            self.voter.setOutput_dim(self.output_dim)
-            st.toast("Change saved")
+            if st.button("Confirm Change"):
+                edited_df.to_csv(self.classFilePath, index=False)
+                self.label_mapping = self.dfToDict(edited_df, 'Id', 'Flower')
+                self.output_dim = len(self.label_mapping)
+                self.voter.setOutput_dim(self.output_dim)
+                st.toast("Change saved")
+
+
+        with st.expander("Training Data modification"):
+            st.subheader("Training Data:",anchor=False)
+
+            st.write("Select displaying axes and display format:")
+            self.parameterList = list(self.originalTrainData.columns)
+            self.displayFormatDict = {"plot":"plot", "scatter":"scatter", "stem":"stem", "stackplot":"stackplot", "hist":"hist"}
+
+            col1, col2 = st.columns(2)
+            with col1:
+                xPresentation = st.selectbox("X axis:",self.parameterList)
+            with col2:
+                yPresentation = st.selectbox("Y axis: (may not be shown on certain graphs)",self.parameterList)
+            
+            displayFormat = st.selectbox("Display format:",self.displayFormatDict)
+            showDistribution = st.button("Show distribution")
+
+            st.write("Current data distribution:")
+
+            if showDistribution:
+                # fig, ax = plt.subplots()
+                # try:
+                #     getattr(ax, self.displayFormatDict[displayFormat])(xPresentation, yPresentation)
+                # except:
+                #     getattr(ax, self.displayFormatDict[displayFormat])(xPresentation)
+                # st.pyplot(fig)
+
+                graph = plotter.plot(self.originalTrainData, self.displayFormatDict[displayFormat], xPresentation, yPresentation)
+                    
+
+
+
+                # # Set the title and axis labels
+                # ax.set_title('Histogram of column_name')
+                # ax.set_xlabel('Values')
+                # ax.set_ylabel('Frequency')
+                # # Adjust the layout
+                # plt.tight_layout()
+                # # Assign the figure and axis objects to variables
+                # histogram_fig = fig
+                # histogram_ax = ax
+
+            # upload test data and combine csv
+            # this part requires further testing
+            uploaded_file = st.file_uploader("Choose a file")
+            if uploaded_file is not None:
+                newTrainData = pd.read_csv(uploaded_file)
+                self.originalTrainData = self.originalTrainData.merge(newTrainData, how='outer')
+                self.originalTrainData.to_csv(self.trainDataPath, index=False)
 
         
-        st.divider()
-        st.subheader("Training Data:")
+        with st.expander("Model training"):
+            st.subheader("Model training:",anchor=False)
 
-        # upload test data and combine csv
-        # this part requires further testing
-        uploaded_file = st.file_uploader("Choose a file")
-        if uploaded_file is not None:
-            newTrainData = pd.read_csv(uploaded_file)
-            self.originalTrainData = self.originalTrainData.merge(newTrainData, how='outer')
-            self.originalTrainData.to_csv(self.trainDataPath, index=False)
+            if st.button("Re-partition data"):
+                self.partitionData()
+                st.toast("Data re-partitioned")
 
+            if st.button("Train Model"):
+                st.toast("Network training in progress")
+                self.voter.train_network( self.X_train,self.y_train,self.X_test,self.y_test,self.train_losses,self.test_losses,False)
+                st.toast("Network training complete")
 
-        st.divider()
-        st.subheader("Model training:")
-
-        if st.button("Re-partition data"):
-            self.partitionData()
-            st.toast("Data re-partitioned")
-
-        if st.button("Train Model"):
-            st.toast("Network training in progress")
-            self.voter.train_network( self.X_train,self.y_train,self.X_test,self.y_test,self.train_losses,self.test_losses,False)
-            st.toast("Network training complete")
-
-        if st.button("Save Model"):
-            self.voter.save_network()
-            st.toast("Network saved")
+            if st.button("Save Model"):
+                self.voter.save_network()
+                st.toast("Network saved")
 
 
         
