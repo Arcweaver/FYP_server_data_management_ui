@@ -164,6 +164,7 @@ class voter():
 class plotter():
 
     def plot(data, method, x, y, real_class=None):
+        st.write("Data distribution:")
         try:
             fig, ax = plt.subplots()
             if method == "plot":
@@ -257,6 +258,17 @@ class data_modification_interface():
         self.y_test = torch.LongTensor(self.y_test)
 
     def draw(self):
+        st.markdown("""
+        <style>
+            .reportview-container {
+                margin-top: -2em;
+            }
+            #MainMenu {visibility: hidden;}
+            .stDeployButton {display:none;}
+            footer {visibility: hidden;}
+            #stDecoration {display:none;}
+        </style>
+        """, unsafe_allow_html=True)
         st.header("Modify classes and test data here",anchor=False)
         st.divider()
         with st.expander("Class modification"):
@@ -288,7 +300,6 @@ class data_modification_interface():
 
             st.write("Select displaying axes and display format:")
             self.parameterList = list(self.originalTrainData.columns[:-1])
-            self.targetCol = self.originalTrainData[self.originalTrainData.columns[-1]]
             self.displayFormatDict = {"basic plot":"plot", "line chart":"line", "scatter chart":"scatter", "stem chart":"stem graph", "area chart":"area", "bar chart":"bar"}
 
             col1, col2 = st.columns(2)
@@ -300,43 +311,27 @@ class data_modification_interface():
             displayFormat = st.selectbox("Display format:",self.displayFormatDict)
             showDistribution = st.button("Show distribution")
 
-            st.write("Current data distribution:")
-
+            
+            #plot graph
             if showDistribution:
-                # fig, ax = plt.subplots()
-                # try:
-                #     getattr(ax, self.displayFormatDict[displayFormat])(xPresentation, yPresentation)
-                # except:
-                #     getattr(ax, self.displayFormatDict[displayFormat])(xPresentation)
-                # st.pyplot(fig)
-                
                 mapper = self.flower_mapping_frame.set_index('Id')['Flower'].to_dict()
-                self.originalTrainData['Flower Name'] = self.originalTrainData['target'].map(mapper)
+                temp_data = self.originalTrainData.copy()
+                temp_data['Flower Name'] = temp_data['target'].map(mapper)
 
-                graph = plotter.plot(self.originalTrainData, self.displayFormatDict[displayFormat], xPresentation, yPresentation, "Flower Name")
+                graph = plotter.plot(temp_data, self.displayFormatDict[displayFormat], xPresentation, yPresentation, "Flower Name")
                     
 
 
-
-                # # Set the title and axis labels
-                # ax.set_title('Histogram of column_name')
-                # ax.set_xlabel('Values')
-                # ax.set_ylabel('Frequency')
-                # # Adjust the layout
-                # plt.tight_layout()
-                # # Assign the figure and axis objects to variables
-                # histogram_fig = fig
-                # histogram_ax = ax
-
             # upload test data and combine csv
             # this part requires further testing
+            st.divider()
+            st.write("Modify Training File")
             uploaded_file = st.file_uploader("Choose a file")
             if uploaded_file is not None:
                 newTrainData = pd.read_csv(uploaded_file)
                 self.originalTrainData = self.originalTrainData.merge(newTrainData, how='outer')
                 self.originalTrainData.to_csv(self.trainDataPath, index=False)
                 self.parameterList = list(self.originalTrainData.columns[:-1])
-                self.targetCol = self.originalTrainData[self.originalTrainData.columns[-1]]
 
         
         with st.expander("Model training"):
