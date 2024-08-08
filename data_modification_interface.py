@@ -167,18 +167,34 @@ class plotter():
         try:
             fig, ax = plt.subplots()
             if method == "plot":
-                ax.plot(data[x], data[y])
+                ax.plot(data[x], data[y]) 
+                st.pyplot(fig) 
             elif method == "scatter":
-                ax.scatter(data[x], data[y])
+                st.scatter_chart(
+                    data,
+                    x=x,
+                    y=y,
+                    color="target"
+                    )
             elif method == "stem":
-                ax.stem(data[x], data[y])
-            elif method == "stackplot":
-                ax.stackplot(data[x], data[y])
-            elif method == "hist":
-                ax.hist(data[x], bins=20)
-            st.pyplot(fig)
-        except:
-            st.toast("Unable to plot the "+method+" graph")
+                ax.stem(data[x], data[y])  
+                st.pyplot(fig)
+            elif method == "area":
+                st.area_chart(
+                    data,
+                    x=x,
+                    y=y,
+                    color="target"
+                    )
+            elif method == "bar":
+                st.bar_chart(
+                    data,
+                    x=x,
+                    y=y,
+                    color="target"
+                    )
+        except Exception as e:
+            st.toast("Unable to plot the "+method+" graph\nError: "+str(e))
 
 class data_modification_interface():
 
@@ -264,8 +280,9 @@ class data_modification_interface():
             st.subheader("Training Data:",anchor=False)
 
             st.write("Select displaying axes and display format:")
-            self.parameterList = list(self.originalTrainData.columns)
-            self.displayFormatDict = {"plot":"plot", "scatter":"scatter", "stem":"stem", "stackplot":"stackplot", "hist":"hist"}
+            self.parameterList = list(self.originalTrainData.columns[:-1])
+            self.targetCol = self.originalTrainData[self.originalTrainData.columns[-1]]
+            self.displayFormatDict = {"basic plot":"plot", "scatter graph":"scatter", "stem graph":"stem graph", "area chart":"area", "bar chart":"bar"}
 
             col1, col2 = st.columns(2)
             with col1:
@@ -285,6 +302,7 @@ class data_modification_interface():
                 # except:
                 #     getattr(ax, self.displayFormatDict[displayFormat])(xPresentation)
                 # st.pyplot(fig)
+                
 
                 graph = plotter.plot(self.originalTrainData, self.displayFormatDict[displayFormat], xPresentation, yPresentation)
                     
@@ -308,6 +326,8 @@ class data_modification_interface():
                 newTrainData = pd.read_csv(uploaded_file)
                 self.originalTrainData = self.originalTrainData.merge(newTrainData, how='outer')
                 self.originalTrainData.to_csv(self.trainDataPath, index=False)
+                self.parameterList = list(self.originalTrainData.columns[:-1])
+                self.targetCol = self.originalTrainData[self.originalTrainData.columns[-1]]
 
         
         with st.expander("Model training"):
