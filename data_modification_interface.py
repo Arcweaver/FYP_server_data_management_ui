@@ -210,7 +210,7 @@ class data_modification_interface():
         return {a: b for a, b, include in zip(df[col1], df[col2], df['Include']) if include}
 
 
-    def __init__(self, voter, classFilePath="M:/People/James/test/python/FYP_stuff/data/flower.csv", trainDataPath="put_path_here"):
+    def __init__(self, voter, classFilePath, trainDataPath):
         self.voter = voter
         self.train_losses = np.zeros(voter.num_epochs)
         self.test_losses  = np.zeros(voter.num_epochs)
@@ -242,6 +242,7 @@ class data_modification_interface():
             #have some default value here. Below is temp data
             self.originalTrainData = pd.DataFrame(datasets.load_iris().data, columns=datasets.load_iris().feature_names)
             self.originalTrainData['target'] = datasets.load_iris().target
+            self.originalTrainData.to_csv(trainDataPath, index=False)
         # partition training data
         self.X = self.originalTrainData.drop(["target"],axis=1).values
         self.y = self.originalTrainData["target"].values
@@ -325,13 +326,26 @@ class data_modification_interface():
             # upload test data and combine csv
             # this part requires further testing
             st.divider()
-            st.write("Modify Training File")
-            uploaded_file = st.file_uploader("Choose a file")
+            upload_col1, upload_col2 = st.columns(2)
+            with upload_col1:
+                st.write("Modify Training File")
+            with upload_col2:
+                replaceTrainingData = st.checkbox("Replace Training File and Data")
+            uploaded_file = st.file_uploader("Choose a file to append new data")
             if uploaded_file is not None:
                 newTrainData = pd.read_csv(uploaded_file)
-                self.originalTrainData = self.originalTrainData.merge(newTrainData, how='outer')
-                self.originalTrainData.to_csv(self.trainDataPath, index=False)
-                self.parameterList = list(self.originalTrainData.columns[:-1])
+                if replaceTrainingData:
+                    self.originalTrainData = newTrainData
+                    self.originalTrainData.to_csv(self.trainDataPath, index=False)
+                    self.parameterList = list(self.originalTrainData.columns[:-1])
+                else:
+                    if list(self.originalTrainData.columns) == list(newTrainData.columns):
+                        # Combine the two DataFrames
+                        self.originalTrainData = pd.concat([self.originalTrainData, newTrainData], ignore_index=True)
+                        self.originalTrainData.to_csv(self.trainDataPath, index=False)
+                        self.parameterList = list(self.originalTrainData.columns[:-1])
+                    else:
+                        st.toast("Uploaded data is incompatible with original data")
 
         
         with st.expander("Model training"):
@@ -384,7 +398,7 @@ def main():
     # Use the proper data set 
     rootFilePath="M:/People/James/test/python/FYP_stuff/"  # directory for storing networks
     classFilePath="M:/People/James/test/python/FYP_stuff/data/flower.csv" # file of stored labels
-    trainDataPath="put_path_here" # file of training data
+    trainDataPath="M:/People/James/test/python/FYP_stuff/data/training.csv" # file of training data
     majority_voter = voter(input_dim, output_dim, num_epochs, learning_rate, rootFilePath)
     dmi = data_modification_interface(majority_voter, classFilePath, trainDataPath)
     dmi.draw()
