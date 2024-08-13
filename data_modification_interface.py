@@ -355,9 +355,16 @@ class data_modification_interface():
                 self.partitionData()
                 st.toast("Data re-partitioned")
 
-            if st.button("Train Model"):
+            modelc1, modelc2 = st.columns(2)
+            with modelc1:
+                trainModelBtn = st.button("Train Model")
+
+            with modelc2:
+                showTrainResultBtn = st.checkbox("Show training result")
+
+            if trainModelBtn:
                 st.toast("Network training in progress")
-                self.voter.train_network( self.X_train,self.y_train,self.X_test,self.y_test,self.train_losses,self.test_losses,False)
+                self.voter.train_network( self.X_train,self.y_train,self.X_test,self.y_test,self.train_losses,self.test_losses,showTrainResultBtn)
                 st.toast("Network training complete")
 
             if st.button("Save Model"):
