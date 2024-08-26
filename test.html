@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>A Machine Learning-Driven Online Mobile Application for Personalized Student Stress Management</title>
+    <style>
+        body,
+        html {
+          color: #000;
+          text-align: center;
+          background: #ffffff;
+          margin: 0;
+          font-family: 'Arial', sans-serif;
+        }
+
+        .grid-container {
+          background: #f4fbfd;
+        }
+
+        @supports (display: grid) {
+          .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: auto 1fr auto;
+            grid-template-areas: "header header header" "title title footer" "main main main";
+          }
+          @media screen and (max-width: 500px) {
+            .grid-container {
+              grid-template-columns: 1fr;
+              grid-template-rows: 0.3fr 1fr auto 1fr;
+              grid-template-areas: "header" "title" "main" "footer";
+            }
+          }
+
+          .grid-item {
+            background: skyblue;
+            padding: 3.5em 1em;
+            font-size: 1em;
+            font-weight: 700;
+          }
+
+          .header {
+            background-color: #092a37;
+            grid-area: header;
+            padding: 1em;
+          }
+
+          .title {
+            color: white;
+            grid-area: title;
+          }
+
+          .main {
+            background-color: black;
+            grid-area: main;
+            padding: 0;
+            overflow-x: hidden;
+            overflow-y: hidden;
+          }
+
+          .footer {
+            background-color: #5bbce4;
+            grid-area: footer;
+            padding: 0.6em;
+          }
+
+          .items {
+            position: relative;
+            width: 100%;
+            overflow-x: hidden;
+            overflow-y: hidden;
+            white-space: nowrap;
+            transition: all 0.2s;
+            will-change: transform;
+            user-select: none;
+            cursor: pointer;
+          }
+
+          .items.active {
+            cursor: grabbing;
+            transform: scale(1.0125);
+          }
+
+          .item-box {
+            display: inline-block;
+            min-height: 250px;
+            min-width: 400px;
+            margin: 2em 1em;
+          }
+          @media screen and (max-width: 500px) {
+            .item-box {
+              min-height: 200px;
+              min-width: 200px;
+            }
+          }
+        }
+        a {
+          display: block;
+          color: #c9e9f6;
+          text-decoration: underline;
+          margin: 1em auto;
+        }
+        a:hover {
+          cursor: pointer;
+        }
+
+        p {
+          text-align: left;
+          text-indent: 20px;
+          font-weight: 100;
+        }
+
+        .round-box{
+            border-radius: 10px;
+        }
+
+        .feature-box-background{
+          background: linear-gradient(135deg,#FF00FF,#4B0082);
+          border-radius: 20px;
+        }
+
+        .schedule-box{
+          color: white;
+          background: linear-gradient(135deg,#4B0082,#FF00FF);
+          border-radius: 20px;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          padding-bottom: 10px;
+        }
+
+        .schedule-item{
+            color: black;
+            width: 700px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            text-align: left;
+            padding-left: 20px;
+        }
+
+        .embed-report{
+            width: 1000px;
+            margin:auto;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+        }
+
+        .report-description{
+            text-align:center;
+        }
+
+        .red-gradient-box{
+          background: linear-gradient(135deg,#FFB6C1,#C71585);
+        }
+        .yellow-gradient-box{
+          background: linear-gradient(135deg,#FFFACD,#FF8C00);
+        }
+        .green-gradient-box{
+          background: linear-gradient(135deg,#90EE90,#008B8B);
+        }
+        .blue-gradient-box{
+          background: linear-gradient(135deg,#E0FFFF,#663399 120%);
+        }
+
+        .footnote{
+          background: #efefef;
+          padding-top: 20px;
+          padding-bottom: 20px;
+          text-align: left;
+        }
+
+        .embed-media{
+          width: 1000px;
+          margin: auto;
+          margin-top: 50px;
+          margin-bottom: 50px;
+        }
+
+        .embed-media h2{
+          text-align: left;
+          margin: auto;
+          margin-top: 50px;
+          margin-bottom: 20px;
+        }
+
+        .banner {
+          display: flex;
+          flex-direction: row;
+          width: 1000px;
+          margin: auto;
+          text-align: left;
+        }
+
+        .banner .left, .banner .right {
+          width: 50%;
+        }
+
+        .intro{
+          padding: auto;
+          margin-top: 50px;
+          margin-bottom: 50px;
+        }
+
+
+    </style>
+</head>
+<body>
+<div>
+    <h1>A Machine Learning-Driven Online Mobile Application for Personalized Student Stress Management</h1>
+</div>
+
+<div class="banner">
+    <div class="left">
+        <h1>A Machine Learning-Driven Online Mobile Application for Personalized Student Stress Management</h1>
+        <p>
+
+        </p>
+        <ul style="list-style-type: none;">
+            <li>Member 1</li>
+            <li>Member 2</li>
+            <li>Member 3</li>
+            <li>Supervisor 1</li>
+            <li>Supervisor 2</li>
+        </ul>
+    </div>
+    <div class="right">
+        <img decoding="async" width="500" height="300" src="https://wp2023.cs.hku.hk/fyp23017/wp-content/uploads/sites/18/mental_health_1683657197.jpg" alt="" class="wp-image-24">
+    </div>
+</div>
+
+<div class="intro blue-gradient-box round-box">
+    <h2>Our app's introduction</h2>
+    <p>We are aaaaa.</p>
+</div>
+<div class="grid-container">
+    <main class="grid-item main feature-box-background">
+        <div class="title">
+            <h2>App Features</h2>
+        </div>
+        <div class="items">
+            <div class="item-box red-gradient-box round-box">
+                <h4>Daily Tips</h4>
+                <p>We can give users great tips!</p>
+            </div>
+            <div class="item-box yellow-gradient-box round-box">
+                <h4>Forum for Peer Support</h4>
+                <p>Help each other!</p>
+            </div>
+            <div class="item-box green-gradient-box round-box">
+                <h4>Data Driven Personalization</h4>
+                <p>ML stuff.</p>
+            </div>
+            <div class="item-box blue-gradient-box round-box">
+                <h4>Customization Functions and Additions</h4>
+                <p>More functions</p>
+            </div>
+        </div>
+    </main>
+</div>
+
+
+<div class="embed-media">
+    <div>
+        <h2 style="font-style:normal;font-weight:600;line-height:1.2">Project Poster</h2>
+    </div>
+    <img decoding="async" width="1000" height="1000" src="https://wp2023.cs.hku.hk/fyp23017/wp-content/uploads/sites/18/Poster.png" alt="" class="wp-image-37">
+</div>
+
+
+<div class="embed-media">
+    <div>
+        <h2 style="font-style:normal;font-weight:600;line-height:1.2">3-Min Video</h2>
+    </div>
+    <video controls="" width="1000" height="500" src="https://wp2023.cs.hku.hk/fyp23017/wp-content/uploads/sites/18/VID_20240422035418882.mp4"></video>
+</div>
+
+
+
+<div class="schedule-box">
+    <h2>Schedule</h2>
+    <div class="schedule-item round-box red-gradient-box">
+        <h5>Phase 1</h5>
+        <p>Oct 1 ~ Oct 2</p>
+        <ul><li>
+            First point
+        </li></ul>
+        <p>Oct 3 ~ Oct 4</p>
+        <ul><li>
+            Second point
+        </li></ul>
+        <p>Oct 5 ~ Oct 6</p>
+        <ul><li>
+            Third point
+        </li></ul>
+    </div>
+    <div class="schedule-item round-box yellow-gradient-box">
+        <h5>Phase 2</h5>
+        <p>Oct 1 ~ Oct 2</p>
+        <ul><li>
+            First point
+        </li></ul>
+        <p>Oct 3 ~ Oct 4</p>
+        <ul><li>
+            Second point
+        </li></ul>
+        <p>Oct 5 ~ Oct 6</p>
+        <ul><li>
+            Third point
+        </li></ul>
+    </div>
+    <div class="schedule-item round-box green-gradient-box">
+        <h5>Phase 3</h5>
+        <p>Oct 1 ~ Oct 2</p>
+        <ul><li>
+            First point
+        </li></ul>
+        <p>Oct 3 ~ Oct 4</p>
+        <ul><li>
+            Second point
+        </li></ul>
+        <p>Oct 5 ~ Oct 6</p>
+        <ul><li>
+            Third point
+        </li></ul>
+    </div>
+</div>
+
+<div class="embed-report">
+    <h1>Phase 1 Report: Detailed Project Plan</h1>
+    <p class="report-description">Put some description here</p>
+    <object data="https://wp2023.cs.hku.hk/fyp23017/wp-content/uploads/sites/18/YeungWingPan_DetaledProjectPlan.pdf" type="application/pdf" style="width:100%;height:600px" aria-label="Embed of YeungWingPan_DetailedProjectPlan."></object>
+</div>
+
+<div class="embed-report">
+    <h1>Phase 2 Report: Detailed Project Plan</h1>
+    <p class="report-description">Put some description here</p>
+    <object data="https://wp2023.cs.hku.hk/fyp23017/wp-content/uploads/sites/18/YeungWingPan_DetaledProjectPlan.pdf" type="application/pdf" style="width:100%;height:600px" aria-label="Embed of YeungWingPan_DetailedProjectPlan."></object>
+</div>
+
+<div class="embed-report">
+    <h1>Phase 3 Report: Detailed Project Plan</h1>
+    <p class="report-description">Put some description here</p>
+    <object data="https://wp2023.cs.hku.hk/fyp23017/wp-content/uploads/sites/18/YeungWingPan_DetaledProjectPlan.pdf" type="application/pdf" style="width:100%;height:600px" aria-label="Embed of YeungWingPan_DetailedProjectPlan."></object>
+</div>
+
+<div class="footnote">
+    Footnote here
+</div>
+
+
+
+<script>
+    const slider = document.querySelector('.items');
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+
+    slider.addEventListener('mousedown', (e) => {
+      isDown = true;
+      slider.classList.add('active');
+      startX = e.pageX - slider.offsetLeft;
+      scrollLeft = slider.scrollLeft;
+    });
+    slider.addEventListener('mouseleave', () => {
+      isDown = false;
+      slider.classList.remove('active');
+    });
+    slider.addEventListener('mouseup', () => {
+      isDown = false;
+      slider.classList.remove('active');
+    });
+    slider.addEventListener('mousemove', (e) => {
+      if(!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - slider.offsetLeft;
+      const scrollSpeed = 1; //adjust scrolling speed here
+      const walk = (x - startX) * scrollSpeed;
+      slider.scrollLeft = scrollLeft - walk;
+      console.log(walk);
+    });
+</script>
+</body>
+</html>
